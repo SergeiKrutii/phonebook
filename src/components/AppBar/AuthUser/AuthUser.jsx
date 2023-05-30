@@ -22,6 +22,7 @@ function stringAvatar(name) {
 
 const AuthUser = () => {
   const userName = useSelector(authSelectors.getUserName);
+
   const dispatch = useDispatch();
 
   return (

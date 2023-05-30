@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import authOperations from "components/redux/auth/authOperations";
 import { StyledSigninPage } from "./StyledSigninPage";
@@ -11,6 +11,10 @@ import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import KeyIcon from "@mui/icons-material/Key";
 import { getCurrentTheme } from "components/redux/theme/themeSelectors";
 import { useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import authSelectors from "components/redux/auth/authSelectors";
+import { clearError } from "components/redux/auth/authSlice";
 
 const boxOptions = {
   display: "flex",
@@ -22,6 +26,13 @@ const SigninPage = () => {
   const [password, setPassword] = useState("");
   const dispathch = useDispatch();
   const globalTheme = useSelector(getCurrentTheme);
+  const error = useSelector(authSelectors.getError);
+
+  useEffect(() => {
+    if (!error) return;
+    toast.error(error);
+    dispathch(clearError());
+  }, [dispathch, error]);
 
   const textInputOptions = {
     variant: "standard",
@@ -76,48 +87,51 @@ const SigninPage = () => {
   const isEmptyInput = email === "" || password === "";
 
   return (
-    <StyledSigninPage>
-      <span>Please, enter your credentials...</span>
-      <Box sx={{ "& > :not(style)": { m: 1 } }}>
-        <FormControl variant="standard">
-          <Box
-            sx={{
-              ...boxOptions,
-            }}
-          >
-            <AlternateEmailIcon sx={textInputOptions.sx} />
-            <TextField
-              name="email"
-              id="email"
-              value={email}
-              type="email"
-              label="Type your email"
-              {...textInputOptions}
-              onChange={onInputChange}
-            />
-          </Box>
-          <Box sx={{ ...boxOptions }}>
-            <KeyIcon sx={textInputOptions.sx} />
-            <TextField
-              name="password"
-              id="password"
-              value={password}
-              type="password"
-              label="Type your password"
-              {...textInputOptions}
-              onChange={onInputChange}
-            />
-          </Box>
-          <Button
-            {...buttonOptions}
-            disabled={!!isEmptyInput}
-            onClick={onSubmit}
-          >
-            Sign in
-          </Button>
-        </FormControl>
-      </Box>
-    </StyledSigninPage>
+    <>
+      <ToastContainer autoClose={2500} />
+      <StyledSigninPage>
+        <span>Please, enter your credentials</span>
+        <Box sx={{ "& > :not(style)": { m: 1 } }}>
+          <FormControl variant="standard">
+            <Box
+              sx={{
+                ...boxOptions,
+              }}
+            >
+              <AlternateEmailIcon sx={textInputOptions.sx} />
+              <TextField
+                name="email"
+                id="email"
+                value={email}
+                type="email"
+                label="Your email"
+                {...textInputOptions}
+                onChange={onInputChange}
+              />
+            </Box>
+            <Box sx={{ ...boxOptions }}>
+              <KeyIcon sx={textInputOptions.sx} />
+              <TextField
+                name="password"
+                id="password"
+                value={password}
+                type="password"
+                label="Your password"
+                {...textInputOptions}
+                onChange={onInputChange}
+              />
+            </Box>
+            <Button
+              {...buttonOptions}
+              disabled={!!isEmptyInput}
+              onClick={onSubmit}
+            >
+              Sign in
+            </Button>
+          </FormControl>
+        </Box>
+      </StyledSigninPage>
+    </>
   );
 };
 

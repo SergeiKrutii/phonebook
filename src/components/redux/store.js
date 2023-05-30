@@ -20,12 +20,17 @@ const authPersistConfig = {
   storage,
   whitelist: ["token"],
 };
+const themePersistConfig = {
+  key: "globalTheme",
+  storage,
+  whitelist: ["value"],
+};
 
 export const store = configureStore({
   reducer: {
     auth: persistReducer(authPersistConfig, authReducer),
     contacts: contactsReducer,
-    globalTheme: themeReducer,
+    globalTheme: persistReducer(themePersistConfig, themeReducer),
   },
 
   middleware: (getDefaultMiddleware) =>

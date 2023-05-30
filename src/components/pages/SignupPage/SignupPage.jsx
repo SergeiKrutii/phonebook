@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import authOperations from "components/redux/auth/authOperations";
 import { StyledSignupPage } from "./StyledSignupPage";
@@ -11,6 +11,10 @@ import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import KeyIcon from "@mui/icons-material/Key";
 import { getCurrentTheme } from "components/redux/theme/themeSelectors";
+import authSelectors from "components/redux/auth/authSelectors";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { clearError } from "components/redux/auth/authSlice";
 
 const boxOptions = {
   display: "flex",
@@ -22,7 +26,14 @@ const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const globalTheme = useSelector(getCurrentTheme);
+  const error = useSelector(authSelectors.getError);
   const dispathch = useDispatch();
+
+  useEffect(() => {
+    if (!error) return;
+    toast.error(error);
+    dispathch(clearError());
+  }, [dispathch, error]);
 
   const textInputOptions = {
     variant: "standard",
@@ -72,68 +83,70 @@ const SignupPage = () => {
     setPassword("");
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     dispathch(authOperations.signUp({ name, email, password }));
-
     reset();
   };
 
   const isEmptyInput = email === "" || password === "" || name === "";
 
   return (
-    <StyledSignupPage>
-      <span>We kindly ask you to fill in all input fields...</span>
-      <Box sx={{ "& > :not(style)": { m: 1 } }}>
-        <FormControl variant="standard">
-          <Box
-            sx={{
-              ...boxOptions,
-            }}
-          >
-            <AccountCircle sx={textInputOptions.sx} />
-            <TextField
-              name="name"
-              type="text"
-              value={name}
-              label="Type your name"
-              {...textInputOptions}
-              onChange={onInputChange}
-            />
-          </Box>
-          <Box sx={{ ...boxOptions }}>
-            <AlternateEmailIcon sx={textInputOptions.sx} />
-            <TextField
-              name="email"
-              type="email"
-              value={email}
-              label="Type your email"
-              {...textInputOptions}
-              onChange={onInputChange}
-            />
-          </Box>
-          <Box sx={{ ...boxOptions }}>
-            <KeyIcon sx={textInputOptions.sx} />
-            <TextField
-              name="password"
-              value={password}
-              type="password"
-              label="Type your password"
-              {...textInputOptions}
-              onChange={onInputChange}
-            />
-          </Box>
-          <Button
-            {...buttonOptions}
-            disabled={!!isEmptyInput}
-            onClick={onSubmit}
-          >
-            Sign up
-          </Button>
-        </FormControl>
-      </Box>
-    </StyledSignupPage>
+    <>
+      <ToastContainer autoClose={2500} />
+      <StyledSignupPage>
+        <span>We kindly ask you to fill in all input fields</span>
+        <Box sx={{ "& > :not(style)": { m: 1 } }}>
+          <FormControl variant="standard">
+            <Box
+              sx={{
+                ...boxOptions,
+              }}
+            >
+              <AccountCircle sx={textInputOptions.sx} />
+              <TextField
+                name="name"
+                type="text"
+                value={name}
+                label="Your name"
+                {...textInputOptions}
+                onChange={onInputChange}
+              />
+            </Box>
+            <Box sx={{ ...boxOptions }}>
+              <AlternateEmailIcon sx={textInputOptions.sx} />
+              <TextField
+                name="email"
+                type="email"
+                value={email}
+                label="Your email"
+                {...textInputOptions}
+                onChange={onInputChange}
+              />
+            </Box>
+            <Box sx={{ ...boxOptions }}>
+              <KeyIcon sx={textInputOptions.sx} />
+              <TextField
+                name="password"
+                value={password}
+                type="password"
+                label="Your password"
+                {...textInputOptions}
+                onChange={onInputChange}
+              />
+            </Box>
+            <Button
+              {...buttonOptions}
+              disabled={!!isEmptyInput}
+              onClick={onSubmit}
+            >
+              Sign up
+            </Button>
+          </FormControl>
+        </Box>
+      </StyledSignupPage>
+    </>
   );
 };
 

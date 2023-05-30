@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const token = {
   set(token) {
@@ -12,25 +13,32 @@ const token = {
 
 axios.defaults.baseURL = "https://connections-api.herokuapp.com";
 
-const signUp = createAsyncThunk("auth/signup", async (credentials) => {
-  try {
-    const { data } = await axios.post("/users/signup", credentials);
-    token.set(data.token);
-    return data;
-  } catch (error) {
-    console.log(error);
+const signUp = createAsyncThunk(
+  "auth/signup",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post("/users/signup", credentials);
+      console.log("🚀 ~ data:", data);
+      token.set(data.token);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
   }
-});
+);
 
-const signIn = createAsyncThunk("auth/signin", async (credentials) => {
-  try {
-    const { data } = await axios.post("/users/login", credentials);
-    token.set(data.token);
-    return data;
-  } catch (error) {
-    console.log(error);
+const signIn = createAsyncThunk(
+  "auth/signin",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post("/users/login", credentials);
+      token.set(data.token);
+      return data;
+    } catch (error) {
+      return rejectWithValue("No such user exists");
+    }
   }
-});
+);
 
 const getCurrentUser = createAsyncThunk(
   "auth/recovery",

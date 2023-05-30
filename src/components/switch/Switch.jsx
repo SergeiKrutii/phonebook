@@ -8,6 +8,7 @@ import { setLightTheme, setDarkTheme } from "components/redux/theme/themeSlice";
 
 export default function Switch() {
   const globalTheme = useSelector(getCurrentTheme);
+  console.log("🚀 ~ globalTheme:", globalTheme);
   const dispatch = useDispatch();
 
   const toggleTheme = () => {
