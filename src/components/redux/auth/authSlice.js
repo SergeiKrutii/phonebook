@@ -43,7 +43,7 @@ const authSlice = createSlice({
       .addCase(authOperations.getCurrentUser.rejected, (state, _) => {
         state.isFetchCurrentUser = false;
       })
-      .addCase(authOperations.signIn.pending, (state, { payload }) => {
+      .addCase(authOperations.signIn.pending, (state, _) => {
         state.error = null;
       })
       .addCase(authOperations.signIn.fulfilled, (state, { payload }) => {
@@ -52,7 +52,6 @@ const authSlice = createSlice({
         state.isLoggedIn = true;
       })
       .addCase(authOperations.signIn.rejected, (state, { payload }) => {
-        console.log("🚀 ~ payload:", payload);
         state.error = payload;
       })
       .addCase(authOperations.logOut.fulfilled, (state, _) => {

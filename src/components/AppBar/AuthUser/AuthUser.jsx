@@ -9,7 +9,7 @@ function getRandomColor() {
 }
 
 function stringAvatar(name) {
-  const firstLetter = name.charAt(0).toUpperCase();
+  const firstLetter = name[0]?.toUpperCase();
   const lastLetter = name.charAt(name.length - 1).toUpperCase();
 
   return {

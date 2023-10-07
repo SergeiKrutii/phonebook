@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 const token = {
   set(token) {
@@ -18,7 +17,6 @@ const signUp = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const { data } = await axios.post("/users/signup", credentials);
-      console.log("🚀 ~ data:", data);
       token.set(data.token);
       return data;
     } catch (error) {
